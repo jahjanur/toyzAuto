@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { LayoutDashboard, Car, Inbox, Wrench, Tags, MessageSquareQuote, Settings, UserCircle, LogOut, ExternalLink, Menu, X } from "lucide-react";
+import { LayoutDashboard, Car, Inbox, Wrench, Tags, MessageSquareQuote, Settings, UserCircle, DatabaseBackup, LogOut, ExternalLink, Menu, X } from "lucide-react";
 import { logout } from "@/lib/admin-actions";
 import { LogoSvg } from "@/components/brand/logo-svg";
 import { ZulberaBadge } from "@/components/brand/zulbera";
@@ -19,6 +19,7 @@ const NAV = [
   { href: "/admin/testimonials", label: "Testimonials", Icon: MessageSquareQuote },
   { href: "/admin/settings", label: "Site settings", Icon: Settings },
   { href: "/admin/account", label: "Account & users", Icon: UserCircle },
+  { href: "/admin/backup", label: "Backup & restore", Icon: DatabaseBackup },
 ];
 
 export function AdminShell({ user, newInquiries, children }: { user: SessionPayload; newInquiries: number; children: React.ReactNode }) {

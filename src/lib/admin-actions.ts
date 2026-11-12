@@ -9,6 +9,7 @@ import { db, brands, inquiries, services, testimonials, users, vehicleImages, ve
 import { createSession, destroySession, requireAdmin } from "@/lib/auth";
 import { saveSettings, type SiteSettings } from "@/lib/settings";
 import { slugify } from "@/lib/utils";
+import { restoreDatabase } from "@/lib/backup";
 
 export type ActionState = { ok: boolean; error?: string; message?: string } | null;
 
@@ -327,4 +328,25 @@ export async function getAdminStats() {
   await requireAdmin();
   const total = db.select({ n: sql<number>`count(*)` }).from(vehicles).get()?.n ?? 0;
   return { total };
+}
+
+/* ---------------- backup ---------------- */
+/** Owner only: replace the live database with an uploaded backup, then sign out (accounts come from the backup). */
+export async function restoreBackup(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const s = await requireAdmin();
+  if (s.role !== "owner") return { ok: false, error: "Only the owner can restore a backup." };
+  const file = formData.get("backup");
+  if (!(file instanceof File) || file.size === 0) return { ok: false, error: "Choose a backup file (.db) first." };
+  if (file.size > 500 * 1024 * 1024) return { ok: false, error: "That file is too large to be a TOYZ backup." };
+  let vehiclesCount = 0;
+  try {
+    const result = restoreDatabase(Buffer.from(await file.arrayBuffer()));
+    vehiclesCount = result.vehicles;
+    console.log(`[backup] Restored ${file.name} (${result.vehicles} vehicles, ${result.users} users). Previous database kept at ${result.safetyCopy}`);
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Restore failed." };
+  }
+  revalidatePath("/", "layout");
+  await destroySession();
+  redirect(`/admin/login?restored=${vehiclesCount}`);
 }

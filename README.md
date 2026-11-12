@@ -63,6 +63,7 @@ web/
 
 - **Vehicles**: add/edit/duplicate/delete, status (available, reserved, sold, coming soon, hidden) and featured flag (both save instantly from the list), price or "price on request", full specs, summary/description (simple text formatting), highlights, video, photo upload with drag-to-reorder and cover selection. Photo changes apply when you press "Save changes"; a reminder shows until you do.
 - **Inquiries**: every form submission (vehicle, contact, test drive, sell/trade, service, wheels) with status workflow and the related vehicle.
+- **Backup & restore** (owner only): download the whole database as a `.db` file, or upload one to replace it. A restore checks the file (SQLite, intact, TOYZ tables, at least one owner), keeps the current database next to it as `toyz-before-restore-<date>.db`, then signs you out. This is also the easiest way to move content to a new server: deploy, sign in with the owner created from `ADMIN_EMAIL` / `ADMIN_PASSWORD`, and restore a backup. Photos uploaded through the admin live in `UPLOADS_DIR` and are not inside the `.db` file.
 - **Deleting**: every delete (vehicles, services, brands, testimonials, inquiries, users) asks for confirmation first and shows a spinner while it runs. Delete buttons are plain buttons (`ConfirmButton` in `src/components/admin/ui.tsx`), never a `<form>`, because a form placed inside another form is dropped by the browser and the click would save instead of delete.
 - **Services, Brands, Testimonials**: full CRUD.
 - **Site settings**: hero headline/subheadline/buttons, hero video, homepage statement sentence, feature video section (title, text, video), announcement bar, phone/WhatsApp/emails/address/map, opening hours, social links, stats, about text, partners, SEO text, footer blurb, currency.
@@ -84,7 +85,7 @@ Hostinger builds Next.js in "standalone" mode and **replaces the app folder on e
    - `ADMIN_EMAIL`, `ADMIN_PASSWORD`: used only to create the first owner when the database is empty.
    - `NEXT_PUBLIC_SITE_URL=https://toyzautoart.com`
    - `DATABASE_PATH=/home/<username>/toyz-data/toyz.db` and `UPLOADS_DIR=/home/<username>/toyz-data/uploads` (your username looks like `u123456789`).
-4. Data: in File Manager, upload a `toyz-data` folder (database + uploads) to `/home/<username>/`. Without it the site starts empty, creates the tables and the owner account from `ADMIN_EMAIL` / `ADMIN_PASSWORD`, and you add content in the admin.
+4. Data: the first start creates an empty database at `DATABASE_PATH` and an owner account from `ADMIN_EMAIL` / `ADMIN_PASSWORD`. Sign in with that account, open **Admin → Backup & restore**, and upload your database file (`toyz.db`). This avoids guessing which folder the File Manager shows. The runtime log prints the path in use: `[db] SQLite (node:sqlite) at …`.
 5. Deploy, then check **Runtime logs**. Every later push to `main` redeploys automatically.
 6. Check persistence once: change something in the admin, press Redeploy, and confirm the change is still there. If it is lost, the plan cannot keep files outside the app folder; use a VPS (below).
 7. Point the domain at the app and enable SSL. If the domain already hosts another website in hPanel (e.g. the old WordPress site), back it up first; testing on a subdomain first is safer.

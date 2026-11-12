@@ -11,16 +11,22 @@ import { openSqlite, type SqliteClient } from "./sqlite";
 
 export type DB = BetterSQLite3Database<typeof schema>;
 
-const globalForDb = globalThis as unknown as { __toyzDb?: DB };
+const globalForDb = globalThis as unknown as { __toyzDb?: DB; __toyzClient?: SqliteClient };
+
+/** Absolute path of the live database file (DATABASE_PATH, default ./data/toyz.db). */
+export function databasePath(): string {
+  // Runtime data, not part of the build: tell the bundler not to trace these paths.
+  return path.resolve(/*turbopackIgnore: true*/ process.cwd(), process.env.DATABASE_PATH ?? "./data/toyz.db");
+}
 
 function createDb(): DB {
-  // Runtime data, not part of the build: tell the bundler not to trace these paths.
-  const dbPath = path.resolve(/*turbopackIgnore: true*/ process.cwd(), process.env.DATABASE_PATH ?? "./data/toyz.db");
+  const dbPath = databasePath();
   fs.mkdirSync(path.dirname(dbPath), { recursive: true });
   const { client, driver } = openSqlite(dbPath);
   client.exec("PRAGMA journal_mode = WAL");
   client.exec("PRAGMA foreign_keys = ON");
   console.log(`[db] SQLite (${driver}) at ${dbPath}`);
+  globalForDb.__toyzClient = client;
   const db = drizzleFor(client);
   const migrationsFolder = path.resolve(/*turbopackIgnore: true*/ process.cwd(), "drizzle");
   if (fs.existsSync(migrationsFolder)) {
@@ -63,6 +69,19 @@ function bootstrapOwner(db: DB) {
 function getDb(): DB {
   if (!globalForDb.__toyzDb) globalForDb.__toyzDb = createDb();
   return globalForDb.__toyzDb;
+}
+
+/** The open SQLite connection (opens it if needed). Used for backups. */
+export function sqliteClient(): SqliteClient {
+  getDb();
+  return globalForDb.__toyzClient!;
+}
+
+/** Closes the connection; the next query reopens the file (and applies migrations). Used when restoring a backup. */
+export function closeDb() {
+  try { globalForDb.__toyzClient?.close(); } catch { /* already closed */ }
+  globalForDb.__toyzClient = undefined;
+  globalForDb.__toyzDb = undefined;
 }
 
 export const db: DB = new Proxy({} as DB, {
