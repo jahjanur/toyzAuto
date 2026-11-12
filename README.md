@@ -78,7 +78,7 @@ The app needs a Node.js runtime with a writable disk for `data/` (SQLite + uploa
 Hostinger builds Next.js in "standalone" mode and **replaces the app folder on every deploy**, so the database and uploads must live outside it (in your home folder).
 
 1. hPanel → Websites → Add website → **Node.js web app** → Import Git repository → connect GitHub → `jahjanur/toyzAuto`, branch `main`.
-2. Build settings (auto-detected): framework **Next.js**, root directory `/`, Node **20** (or 22), package manager **pnpm** (from `pnpm-lock.yaml`), build script `build`, output directory `.next`.
+2. Build settings (auto-detected): framework **Next.js**, root directory `/`, Node **22**, package manager **pnpm** (from `pnpm-lock.yaml`), build script `build`, output directory `.next`. Node 22 matters: Hostinger's servers are too old for the prebuilt better-sqlite3 module (it needs glibc 2.29), so the app uses Node's built-in `node:sqlite` there instead (see below).
 3. Environment variables (set them before the first deploy; `NEXT_PUBLIC_*` is read at build time):
    - `AUTH_SECRET`: at least 32 random characters (`openssl rand -hex 32`). The admin refuses to sign anyone in without it.
    - `ADMIN_EMAIL`, `ADMIN_PASSWORD`: used only to create the first owner when the database is empty.
@@ -88,6 +88,8 @@ Hostinger builds Next.js in "standalone" mode and **replaces the app folder on e
 5. Deploy, then check **Runtime logs**. Every later push to `main` redeploys automatically.
 6. Check persistence once: change something in the admin, press Redeploy, and confirm the change is still there. If it is lost, the plan cannot keep files outside the app folder; use a VPS (below).
 7. Point the domain at the app and enable SSL. If the domain already hosts another website in hPanel (e.g. the old WordPress site), back it up first; testing on a subdomain first is safer.
+
+Database driver: `src/db/sqlite.ts` opens the database with `better-sqlite3` when it is installed and loads (local Node 20), otherwise with Node's built-in `node:sqlite` (Node 22.13+, no native build). `better-sqlite3` is an optional dependency, so a failed native build does not stop the install. The runtime log shows which one is used, e.g. `[db] SQLite (node:sqlite) at /home/.../toyz.db`. Force one with `SQLITE_DRIVER=node` or `SQLITE_DRIVER=better-sqlite3`.
 
 What makes the standalone build work: `outputFileTracingIncludes` ships the `drizzle/` migrations (applied at startup), runtime paths are marked `turbopackIgnore` so the build does not bundle `data/`, English URLs are mapped onto `[locale]=en` by `rewrites()` in `next.config.ts` (a rewrite in the proxy loops on standalone servers), and `pnpm-workspace.yaml` approves the native builds (`better-sqlite3`, `sharp`).
 

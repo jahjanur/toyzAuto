@@ -1,10 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
-import Database from "better-sqlite3";
 import bcrypt from "bcryptjs";
-import { drizzle, type BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { createTableRelationsHelpers, extractTablesRelationalConfig } from "drizzle-orm";
+import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { BetterSQLiteSession } from "drizzle-orm/better-sqlite3/session";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
+import { BaseSQLiteDatabase, SQLiteSyncDialect } from "drizzle-orm/sqlite-core";
 import * as schema from "./schema";
+import { openSqlite, type SqliteClient } from "./sqlite";
 
 export type DB = BetterSQLite3Database<typeof schema>;
 
@@ -14,10 +17,11 @@ function createDb(): DB {
   // Runtime data, not part of the build: tell the bundler not to trace these paths.
   const dbPath = path.resolve(/*turbopackIgnore: true*/ process.cwd(), process.env.DATABASE_PATH ?? "./data/toyz.db");
   fs.mkdirSync(path.dirname(dbPath), { recursive: true });
-  const sqlite = new Database(dbPath);
-  sqlite.pragma("journal_mode = WAL");
-  sqlite.pragma("foreign_keys = ON");
-  const db = drizzle(sqlite, { schema });
+  const { client, driver } = openSqlite(dbPath);
+  client.exec("PRAGMA journal_mode = WAL");
+  client.exec("PRAGMA foreign_keys = ON");
+  console.log(`[db] SQLite (${driver}) at ${dbPath}`);
+  const db = drizzleFor(client);
   const migrationsFolder = path.resolve(/*turbopackIgnore: true*/ process.cwd(), "drizzle");
   if (fs.existsSync(migrationsFolder)) {
     migrate(db, { migrationsFolder });
@@ -26,6 +30,19 @@ function createDb(): DB {
   }
   bootstrapOwner(db);
   return db;
+}
+
+/**
+ * Same setup as drizzle(client, { schema }) from "drizzle-orm/better-sqlite3", but without importing that entry,
+ * which loads the better-sqlite3 native module even when another driver is used.
+ */
+function drizzleFor(client: SqliteClient): DB {
+  const dialect = new SQLiteSyncDialect();
+  const tables = extractTablesRelationalConfig(schema, createTableRelationsHelpers);
+  const relational = { fullSchema: schema, schema: tables.tables, tableNamesMap: tables.tableNamesMap };
+  // The session only calls prepare/run/all/get/raw/transaction, which both drivers provide.
+  const session = new BetterSQLiteSession(client as never, dialect, relational);
+  return new BaseSQLiteDatabase("sync", dialect, session as never, relational as never) as unknown as DB;
 }
 
 /** On a brand-new database, create the owner account from ADMIN_EMAIL / ADMIN_PASSWORD so someone can sign in. */
