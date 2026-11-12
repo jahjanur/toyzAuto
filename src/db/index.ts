@@ -42,7 +42,18 @@ function bootstrapOwner(db: DB) {
   }
 }
 
-export const db: DB = globalForDb.__toyzDb ?? createDb();
-if (process.env.NODE_ENV !== "production") globalForDb.__toyzDb = db;
+/** Opens the database on first use (not on import), so `next build` never touches the live database. */
+function getDb(): DB {
+  if (!globalForDb.__toyzDb) globalForDb.__toyzDb = createDb();
+  return globalForDb.__toyzDb;
+}
+
+export const db: DB = new Proxy({} as DB, {
+  get(_target, prop) {
+    const real = getDb();
+    const value = Reflect.get(real, prop, real);
+    return typeof value === "function" ? value.bind(real) : value;
+  },
+});
 
 export * from "./schema";
