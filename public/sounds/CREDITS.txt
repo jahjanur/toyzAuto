@@ -1,0 +1,28 @@
+TOYZ autoart — brand hover sound sources
+
+All recordings are from Freesound.org under Creative Commons 0 (public domain dedication,
+https://creativecommons.org/publicdomain/zero/1.0/). Attribution is not required; it is kept here for the record.
+Clips were trimmed, high-passed, loudness-normalized (EBU R128) and faded by scripts in this project.
+
+They are recordings of the same make or engine type, not of the specific cars in the TOYZ inventory.
+Upload your own recording per brand in Admin > Brands.
+(The longer per-car engine clips are no longer used on the site; they are kept in _source/engine-sounds.)
+
+- Ferrari 360 Spider - engine sound  — by PritzProductions — https://freesound.org/people/PritzProductions/sounds/241083/
+  used for: ferrari (hover + engine)
+- Lambo Start Up Sound — by JaimeLopes — https://freesound.org/people/JaimeLopes/sounds/564373/
+  used for: lamborghini (hover + engine)
+- porsche_911.wav — by mharo — https://freesound.org/people/mharo/sounds/55727/
+  used for: porsche (hover + engine)
+- S63 AMG V8 Engine Revs — by marcelweiss — https://freesound.org/people/marcelweiss/sounds/505321/
+  used for: mercedes-benz hover, amg-v8 engine
+- V12 Engine - Short Rev — by Janosch-JR — https://freesound.org/people/Janosch-JR/sounds/484191/
+  used for: aston-martin & rolls-royce hover (rolls: pitched down, softened), v12 / v12-soft engine
+- Car Engine: Maserati GranTurismo Switch to Sport Mode and Launch — by myeclecticself — https://freesound.org/people/myeclecticself/sounds/585215/
+  used for: maserati (hover + engine)
+- Starting and revving a 74 Corvette.mp3 — by DigPro120 — https://freesound.org/people/DigPro120/sounds/432638/
+  used for: chevrolet hover, v8-muscle engine
+- Truck-Diesel 10dodge rev.mp3 — by canucklovingbrit — https://freesound.org/people/canucklovingbrit/sounds/478134/
+  used for: terradyne hover, diesel engine
+- Acceleration of an electric car — by justVova — https://freesound.org/people/justVova/sounds/761685/
+  used for: electric (hover + engine)

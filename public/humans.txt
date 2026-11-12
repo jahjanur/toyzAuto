@@ -1,0 +1,9 @@
+/* TEAM */
+Design & development: Zulbera
+Site: https://zulbera.com
+Location: Montréal, Québec
+
+/* SITE */
+Client: TOYZ autoart — https://toyzautoart.com
+Languages: English, Français
+Built with: Next.js, React, Tailwind CSS, Motion
