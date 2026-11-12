@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [{ protocol: "https", hostname: "toyzautoart.com" }],
   },
   experimental: {
+    // Next 16.2 (pinned because 16.3+ needs glibc 2.30, newer than Hostinger's servers) still flags root params.
+    rootParams: true,
     serverActions: { bodySizeLimit: "200mb" },
   },
   async rewrites() {
