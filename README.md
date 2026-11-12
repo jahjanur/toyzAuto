@@ -8,7 +8,7 @@ High-end, black-and-racing-red Next.js platform for [toyzautoart.com](https://to
 
 | Layer | Choice |
 | --- | --- |
-| Framework | Next.js 16 (App Router, Server Actions, Turbopack) + React 19 |
+| Framework | Next.js 16.2 (App Router, Server Actions; Turbopack in dev, webpack for production builds) + React 19 |
 | Styling | Tailwind CSS v4 with a custom dark/gold design system (`src/app/globals.css`) |
 | Motion | `motion` (Framer Motion) scroll-linked animations + Lenis smooth scroll |
 | Database | SQLite via better-sqlite3 + Drizzle ORM (file: `data/toyz.db`, auto-migrated on boot) |
@@ -88,6 +88,8 @@ Hostinger builds Next.js in "standalone" mode and **replaces the app folder on e
 5. Deploy, then check **Runtime logs**. Every later push to `main` redeploys automatically.
 6. Check persistence once: change something in the admin, press Redeploy, and confirm the change is still there. If it is lost, the plan cannot keep files outside the app folder; use a VPS (below).
 7. Point the domain at the app and enable SSL. If the domain already hosts another website in hPanel (e.g. the old WordPress site), back it up first; testing on a subdomain first is safer.
+
+Production builds use **webpack** (`next build --webpack`): Turbopack runs PostCSS/Tailwind in helper Node processes, and on Hostinger those exit before connecting ("node process exited before we could connect to it"). Tailwind v4 runs through `postcss.config.mjs` (`@tailwindcss/postcss`), which works with both bundlers; `next dev` still uses Turbopack.
 
 Pinned versions (do not upgrade without checking the host): Hostinger's servers run glibc 2.28. Next.js **16.2.x** is the newest line whose compiler (`@next/swc-linux-x64-gnu`) runs there; 16.3.0 and later need glibc 2.30 and the build fails. `sharp` is pinned to the 0.34 line Next 16.2 uses (one copy, needs glibc 2.26). Root params need `experimental.rootParams` on 16.2. To check a new version: `npm pack @next/swc-linux-x64-gnu@<version>` and look for the highest `GLIBC_2.x` string in the `.node` file; it must be 2.28 or lower.
 

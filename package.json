@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
@@ -35,7 +35,7 @@
     "better-sqlite3": "^12.11.1"
   },
   "devDependencies": {
-    "@tailwindcss/turbopack": "^4",
+    "@tailwindcss/postcss": "^4.3.5",
     "@types/bcryptjs": "^3.0.0",
     "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^20",

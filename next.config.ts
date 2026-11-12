@@ -36,14 +36,6 @@ const nextConfig: NextConfig = {
       { source: "/fr/wheels", destination: "/fr/services/wheels-and-tires", permanent: false },
     ];
   },
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        // Preserve .module.css so Next exports its scoped class names.
-      },
-    },
-  },
 };
 
 export default nextConfig;

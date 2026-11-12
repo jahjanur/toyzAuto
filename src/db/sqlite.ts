@@ -1,5 +1,4 @@
 import path from "node:path";
-import { createRequire } from "node:module";
 
 /**
  * Opens a SQLite file with whichever driver this server can run:
@@ -36,9 +35,14 @@ const bind = (params: Params) => params.map((v) => (v === undefined ? null : typ
 /** node:sqlite rows have a null prototype; hand out plain objects like better-sqlite3 does. */
 const plain = (row: unknown) => (row && typeof row === "object" && !Array.isArray(row) ? { ...(row as object) } : row);
 
+/** process.getBuiltinModule (Node 20.16+), typed loosely so a missing module returns undefined. */
+function getBuiltin(id: string): unknown {
+  const fn = (process as unknown as { getBuiltinModule?: (id: string) => unknown }).getBuiltinModule;
+  return fn?.call(process, id);
+}
+
 function openNodeSqlite(file: string): SqliteClient | null {
-  const getBuiltin = (process as unknown as { getBuiltinModule?: (id: string) => unknown }).getBuiltinModule;
-  const mod = getBuiltin?.call(process, "node:sqlite") as NodeSqliteModule | undefined;
+  const mod = getBuiltin("node:sqlite") as NodeSqliteModule | undefined;
   if (!mod?.DatabaseSync) return null;
   const db = new mod.DatabaseSync(file);
 
@@ -75,6 +79,8 @@ function openNodeSqlite(file: string): SqliteClient | null {
 
 function openBetterSqlite(file: string): SqliteClient {
   // Loaded at runtime (not imported) so builds and hosts without the native module still work.
+  // createRequire comes from getBuiltinModule so neither bundler tries to analyse it.
+  const { createRequire } = getBuiltin("node:module") as typeof import("node:module");
   const load = createRequire(path.join(/*turbopackIgnore: true*/ process.cwd(), "package.json"));
   const name = ["better", "sqlite3"].join("-");
   const Database = load(name) as new (f: string) => SqliteClient;
