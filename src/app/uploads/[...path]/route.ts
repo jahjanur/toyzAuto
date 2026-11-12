@@ -13,7 +13,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ path: string[] 
   const { path: parts } = await ctx.params;
   const rel = path.normalize(parts.join("/"));
   if (rel.startsWith("..") || path.isAbsolute(rel)) return new Response("Not found", { status: 404 });
-  const abs = path.join(UPLOADS_DIR, rel);
+  const abs = path.join(/*turbopackIgnore: true*/ UPLOADS_DIR, rel);
   if (!abs.startsWith(UPLOADS_DIR) || !fs.existsSync(abs)) return new Response("Not found", { status: 404 });
   const stat = fs.statSync(abs);
   const type = TYPES[path.extname(abs).toLowerCase()] ?? "application/octet-stream";

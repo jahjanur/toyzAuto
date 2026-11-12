@@ -75,13 +75,21 @@ All changes are live immediately (pages re-render on demand).
 The app needs a Node.js runtime with a writable disk for `data/` (SQLite + uploads).
 
 ### Hostinger (Node.js web app on Business/Cloud plans)
-1. Push the `web` folder to a Git repository (GitHub/GitLab).
-2. In hPanel create a **Node.js web app**, connect the repo, framework preset *Next.js*, Node 20+, build command `pnpm install && pnpm build`, start command `pnpm start`.
-3. Set environment variables: `AUTH_SECRET` (at least 32 random characters, e.g. from `openssl rand -hex 32`; in production the admin refuses to sign anyone in without it), `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `NEXT_PUBLIC_SITE_URL=https://toyzautoart.com`, and point `DATABASE_PATH` / `UPLOADS_DIR` at a persistent directory if the platform gives you one.
-4. Run `pnpm db:seed:prod` once (SSH / post-deploy hook) to create the database and admin user.
-5. Point the `toyzautoart.com` domain at the app and enable SSL.
+Hostinger builds Next.js in "standalone" mode and **replaces the app folder on every deploy**, so the database and uploads must live outside it (in your home folder).
 
-If the Node.js web-app product on your plan does not keep a persistent writable disk between deploys, use a **Hostinger VPS** instead (Ubuntu + Node 20 + PM2 or Docker, nginx in front). Everything else is identical.
+1. hPanel → Websites → Add website → **Node.js web app** → Import Git repository → connect GitHub → `jahjanur/toyzAuto`, branch `main`.
+2. Build settings (auto-detected): framework **Next.js**, root directory `/`, Node **20** (or 22), package manager **pnpm** (from `pnpm-lock.yaml`), build script `build`, output directory `.next`.
+3. Environment variables (set them before the first deploy; `NEXT_PUBLIC_*` is read at build time):
+   - `AUTH_SECRET`: at least 32 random characters (`openssl rand -hex 32`). The admin refuses to sign anyone in without it.
+   - `ADMIN_EMAIL`, `ADMIN_PASSWORD`: used only to create the first owner when the database is empty.
+   - `NEXT_PUBLIC_SITE_URL=https://toyzautoart.com`
+   - `DATABASE_PATH=/home/<username>/toyz-data/toyz.db` and `UPLOADS_DIR=/home/<username>/toyz-data/uploads` (your username looks like `u123456789`).
+4. Data: in File Manager, upload a `toyz-data` folder (database + uploads) to `/home/<username>/`. Without it the site starts empty, creates the tables and the owner account from `ADMIN_EMAIL` / `ADMIN_PASSWORD`, and you add content in the admin.
+5. Deploy, then check **Runtime logs**. Every later push to `main` redeploys automatically.
+6. Check persistence once: change something in the admin, press Redeploy, and confirm the change is still there. If it is lost, the plan cannot keep files outside the app folder; use a VPS (below).
+7. Point the domain at the app and enable SSL. If the domain already hosts another website in hPanel (e.g. the old WordPress site), back it up first; testing on a subdomain first is safer.
+
+What makes the standalone build work: `outputFileTracingIncludes` ships the `drizzle/` migrations (applied at startup), runtime paths are marked `turbopackIgnore` so the build does not bundle `data/`, English URLs are mapped onto `[locale]=en` by `rewrites()` in `next.config.ts` (a rewrite in the proxy loops on standalone servers), and `pnpm-workspace.yaml` approves the native builds (`better-sqlite3`, `sharp`).
 
 ### Any VPS (PM2)
 ```bash

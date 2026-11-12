@@ -6,7 +6,7 @@ import sharp from "sharp";
 
 export const UPLOADS_DIR = process.env.UPLOADS_DIR
   ? path.resolve(/*turbopackIgnore: true*/ process.env.UPLOADS_DIR)
-  : path.join(process.cwd(), "data", "uploads");
+  : path.join(/*turbopackIgnore: true*/ process.cwd(), "data", "uploads");
 
 const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif", "image/heic", "image/heif", "image/gif"]);
 const VIDEO_TYPES = new Set(["video/mp4", "video/webm", "video/quicktime"]);
@@ -24,7 +24,7 @@ export type StoredFile = {
 export async function storeUpload(file: File): Promise<StoredFile> {
   const now = new Date();
   const sub = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, "0")}`;
-  const dir = path.join(UPLOADS_DIR, sub);
+  const dir = path.join(/*turbopackIgnore: true*/ UPLOADS_DIR, sub);
   await fs.mkdir(dir, { recursive: true });
   const id = crypto.randomBytes(8).toString("hex");
   const buf = Buffer.from(await file.arrayBuffer());
@@ -36,7 +36,7 @@ export async function storeUpload(file: File): Promise<StoredFile> {
     const meta = await sharp(out).metadata();
     const blur = await sharp(out).resize(20).webp({ quality: 40 }).toBuffer();
     const name = `${base}-${id}.webp`;
-    await fs.writeFile(path.join(dir, name), out);
+    await fs.writeFile(path.join(/*turbopackIgnore: true*/ dir, name), out);
     return {
       url: `/uploads/${sub}/${name}`, kind: "image", name: file.name, size: out.length,
       width: meta.width, height: meta.height, blurDataUrl: `data:image/webp;base64,${blur.toString("base64")}`,
@@ -44,6 +44,6 @@ export async function storeUpload(file: File): Promise<StoredFile> {
   }
   const ext = path.extname(file.name).toLowerCase() || (VIDEO_TYPES.has(file.type) ? ".mp4" : "");
   const name = `${base}-${id}${ext}`;
-  await fs.writeFile(path.join(dir, name), buf);
+  await fs.writeFile(path.join(/*turbopackIgnore: true*/ dir, name), buf);
   return { url: `/uploads/${sub}/${name}`, kind: VIDEO_TYPES.has(file.type) ? "video" : "file", name: file.name, size: buf.length };
 }

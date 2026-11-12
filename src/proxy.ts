@@ -35,7 +35,7 @@ function prefersFrench(req: NextRequest) {
 }
 
 export async function proxy(req: NextRequest) {
-  const { pathname, search } = req.nextUrl;
+  const { pathname } = req.nextUrl;
 
   if (pathname === "/admin" || pathname.startsWith("/admin/")) return guardAdmin(req);
   if (PASSTHROUGH.test(pathname) || HAS_EXTENSION.test(pathname)) return NextResponse.next();
@@ -56,11 +56,8 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // English is served from the [locale]=en route while the address stays the same.
-  const url = req.nextUrl.clone();
-  url.pathname = `/en${pathname === "/" ? "" : pathname}`;
-  url.search = search;
-  return NextResponse.rewrite(url);
+  // English: the address stays as is; next.config.ts rewrites it onto the [locale]=en route.
+  return NextResponse.next();
 }
 
 export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"] };
