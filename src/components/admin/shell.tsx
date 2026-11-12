@@ -6,7 +6,7 @@ import { useState } from "react";
 import { LayoutDashboard, Car, Inbox, Wrench, Tags, MessageSquareQuote, Settings, UserCircle, LogOut, ExternalLink, Menu, X } from "lucide-react";
 import { logout } from "@/lib/admin-actions";
 import { LogoSvg } from "@/components/brand/logo-svg";
-import { ZulberaCredit } from "@/components/brand/zulbera";
+import { ZulberaBadge } from "@/components/brand/zulbera";
 import type { SessionPayload } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
@@ -48,7 +48,7 @@ export function AdminShell({ user, newInquiries, children }: { user: SessionPayl
             <div className="min-w-0"><p className="truncate text-[13px]">{user.name}</p><p className="truncate text-[11px] text-muted">{user.email}</p></div>
             <form action={logout}><button className="grid size-8 place-items-center rounded-lg text-muted hover:bg-white/[.05] hover:text-danger" aria-label="Sign out"><LogOut className="size-4" /></button></form>
           </div>
-          <div className="mx-1 mt-3 rounded-xl border border-line bg-surface px-3 py-3"><ZulberaCredit label="Powered by" size="md" className="w-full justify-between" /></div>
+          <ZulberaBadge label="Powered by" className="!mt-4" />
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
@@ -60,7 +60,7 @@ export function AdminShell({ user, newInquiries, children }: { user: SessionPayl
           <div className="border-b border-line bg-bg-2 p-4 lg:hidden">
             {nav}
             <div className="mt-3 flex items-center justify-between border-t border-line pt-3 text-[13px]"><a href="/" target="_blank" className="text-ink-2">View website</a><form action={logout}><button className="text-danger">Sign out</button></form></div>
-            <div className="mt-3 border-t border-line pt-3"><ZulberaCredit label="Powered by" size="md" /></div>
+            <div className="mt-3 border-t border-line pt-3"><ZulberaBadge label="Powered by" /></div>
           </div>
         )}
         <main className="flex-1 p-4 md:p-8">{children}</main>

@@ -47,6 +47,28 @@ export function ZulberaCredit({ label, size = "md", className }: { label: string
   );
 }
 
+/** Compact card for narrow spots (admin sidebar and admin phone menu): label over the logo, round arrow on the right. */
+export function ZulberaBadge({ label, className }: { label: string; className?: string }) {
+  return (
+    <a
+      href={ZULBERA_URL}
+      target="_blank"
+      rel="noopener"
+      aria-label={`${label} Zulbera (zulbera.com)`}
+      className={cn("group/zul relative flex items-center justify-between gap-3 overflow-hidden rounded-xl border border-line bg-surface px-4 py-3.5 transition-colors duration-300 hover:border-accent/40", className)}
+    >
+      <span aria-hidden className="pointer-events-none absolute -left-10 top-1/2 size-28 -translate-y-1/2 rounded-full bg-accent/[.06] blur-2xl transition-colors duration-500 group-hover/zul:bg-accent/20" />
+      <span className="relative flex min-w-0 flex-col gap-2">
+        <span className="whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.28em] text-muted transition-colors duration-300 group-hover/zul:text-ink-2">{label}</span>
+        <ZulberaLogo className="h-5 text-white" />
+      </span>
+      <span aria-hidden className="relative grid size-8 shrink-0 place-items-center rounded-full border border-line text-muted transition-all duration-300 group-hover/zul:rotate-45 group-hover/zul:border-accent group-hover/zul:bg-accent group-hover/zul:text-white">
+        <ArrowUpRight className="size-3.5" />
+      </span>
+    </a>
+  );
+}
+
 /** Footer signature card: gradient hairline, large logo, what Zulbera does, a visit button, and a giant emblem watermark. */
 export function ZulberaBand({ label, services, cta }: { label: string; services: string; cta: string }) {
   const items = services.split("·").map((x) => x.trim()).filter(Boolean);

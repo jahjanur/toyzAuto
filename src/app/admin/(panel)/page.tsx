@@ -29,7 +29,7 @@ export default async function Dashboard() {
         <div><p className="eyebrow">Overview</p><h1 className="mt-2 font-display text-3xl font-light">Dashboard</h1></div>
         <Link href="/admin/vehicles/new" className="inline-flex h-10 items-center gap-2 rounded-lg bg-accent px-4 text-sm font-medium text-white hover:bg-accent-2"><Plus className="size-4" /> Add vehicle</Link>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map(({ label, value, sub, Icon }) => (
           <div key={label} className="rounded-2xl border border-line bg-surface p-5">
             <div className="flex items-center justify-between"><p className="label mb-0">{label}</p><Icon className="size-4 text-accent" /></div>
@@ -38,7 +38,7 @@ export default async function Dashboard() {
           </div>
         ))}
       </div>
-      <div className="grid gap-6 xl:grid-cols-[1.3fr_1fr]">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         <Card title="Recent inquiries" actions={<Link href="/admin/inquiries" className="inline-flex items-center gap-1 text-[13px] text-accent hover:text-accent-2">All inquiries <ArrowUpRight className="size-3.5" /></Link>}>
           {recent.length ? (
             <ul className="divide-y divide-line">
