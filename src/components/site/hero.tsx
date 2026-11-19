@@ -63,10 +63,10 @@ export function Hero({ video, eyebrow, headline, subheadline, primary, secondary
       </motion.div>
 
       <motion.div style={{ y: contentY, opacity: contentOpacity }} className="container-x relative z-10 flex h-full flex-col justify-end pb-[max(7rem,14svh)] pt-[var(--nav-h)]">
-        <p className="eyebrow fade-in-up mb-6 flex items-center gap-3" style={{ ["--d" as string]: "0.15s" }}>
-          <span className="inline-block h-[2px] w-8 bg-accent" />{eyebrow}
+        <p className="fade-in-up mb-4 flex items-center gap-2.5 font-mono text-[0.6rem] font-medium uppercase tracking-[0.22em] text-accent-2 md:mb-5 md:text-[0.64rem]" style={{ ["--d" as string]: "0.15s" }}>
+          <span className="inline-block h-[2px] w-6 shrink-0 bg-accent" />{eyebrow.replace(/ ([·•|]) /g, "\u00a0$1 ")}
         </p>
-        <h1 className="display text-[clamp(1.95rem,8.3vw,8.25rem)]" aria-label={headline.replace(/\n/g, " ")}>
+        <h1 className="display text-[clamp(1.7rem,7vw,2.6rem)] md:text-[clamp(2.6rem,5.6vw,6rem)]" aria-label={headline.replace(/\n/g, " ")}>
           <span ref={fitRef} className="block">
           {lines.map((line, li) => (
             <span key={li} className="block overflow-hidden pb-[0.04em]" aria-hidden>
@@ -84,7 +84,7 @@ export function Hero({ video, eyebrow, headline, subheadline, primary, secondary
           ))}
           </span>
         </h1>
-        <div className="mt-8 flex flex-col gap-7 md:flex-row md:items-end md:justify-between">
+        <div className="mt-6 flex flex-col gap-7 md:mt-7 md:flex-row md:items-end md:justify-between">
           <p className="fade-in-up max-w-sm text-[15px] leading-relaxed text-ink-2 md:text-base" style={{ ["--d" as string]: "0.75s" }}>{subheadline}</p>
           <div className="fade-in-up flex flex-wrap gap-3" style={{ ["--d" as string]: "0.9s" }}>
             <ButtonLink href={primary.href} size="lg" arrow>{primary.label}</ButtonLink>
