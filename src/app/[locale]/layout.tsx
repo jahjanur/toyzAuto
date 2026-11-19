@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
     authors: [{ name: "Zulbera", url: "https://zulbera.com" }],
     creator: "Zulbera",
     generator: "Zulbera",
-    openGraph: { type: "website", siteName: "TOYZ autoart", locale: l === "fr" ? "fr_CA" : "en_CA", images: ["/media/hero-bugatti-poster.jpg"] },
+    openGraph: { type: "website", siteName: "TOYZ autoart", locale: l === "fr" ? "fr_CA" : "en_CA", images: ["/media/showroom.jpg"] },
   };
 }
 

@@ -39,6 +39,14 @@ export function LazyVideo({ src, srcMobile, poster, className, eager }: { src: s
   }, []);
 
   const source = mobile === null ? undefined : mobile && srcMobile ? srcMobile : src;
+
+  // The observer fires before React has attached the file, so its play() can fail. Start once the source is set.
+  useEffect(() => {
+    if (!near || !source) return;
+    const p = ref.current?.play();
+    if (p) p.catch(() => undefined);
+  }, [near, source]);
+
   return (
     <video
       ref={ref}

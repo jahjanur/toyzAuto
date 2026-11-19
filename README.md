@@ -53,7 +53,7 @@ web/
 ├─ src/db/                Drizzle schema, SQLite client (auto-migrate), seed script
 ├─ src/lib/               settings model, queries, server actions, auth, uploads
 ├─ drizzle/               SQL migrations
-├─ public/media/          hero (Bugatti) and feature (wheels) videos, 1080p + 720p, with posters
+├─ public/media/          showroom film (hero) and its wheel shots (feature), 1080p + 720p, posters, showroom.jpg
 ├─ public/brand/          logo, marques/*.svg (car brand emblems), partners/*.png (BRABUS, HRE, Vossen, Novitec, TECHART, Urban)
 ├─ public/vehicles/       imported vehicle photos (WebP, max 1920px)
 └─ data/                  SQLite database + uploads (git-ignored; back this folder up)
@@ -151,13 +151,22 @@ The logo uses the site's red for the emblem and white for the wordmark. Links go
 
 ## Video look
 
-The hero and wheels videos have a cinematic grade baked in: muted greens and blues, rich reds, deeper blacks with detail kept, gentle highlight roll-off, a soft vignette and light sharpening. Both source clips also had burned-in bars at the bottom, which are cropped off. On top, the site adds a moving film-grain and vignette layer (the `.cinema` class in `globals.css`). To grade a new clip the same way:
+Both homepage videos come from the client's showroom film (`toyz website video v1_prob4.mp4`, 4K 59.94 fps, kept outside the repo):
+
+| File | Content | Size |
+|---|---|---|
+| `hero-showroom-1080.mp4` / `-720.mp4` | The full 28 s tour; opens and closes on the TOYZ sign, fades out at the end so the loop restarts cleanly | 9.3 MB / 3.8 MB |
+| `feature-wheels-1080.mp4` / `-720.mp4` | The wheel shots (10.95–15.83 s) for the "Wheel atelier" section | 1.6 MB / 0.6 MB |
+| `hero-showroom-poster.jpg`, `feature-wheels-poster.jpg` | First frame of each video, shown until it plays | |
+| `showroom.jpg` | Logo wall and Porsche; social previews and the About page header | |
+
+They are encoded with a light finish on top of the film's own grade (calmer greens and blues, slightly richer reds, a gentle S-curve, soft vignette, light sharpening after a Lanczos downscale from 4K), at 29.97 fps, without audio, in two passes. Phones get the 720p file. On top, the site adds a moving film-grain and vignette layer (the `.cinema` class in `globals.css`). Settings saved before the switch that still point at the retired Bugatti/wheels clips fall back to these files automatically. To prepare a new clip the same way:
 
 ```bash
-scripts/grade-video.sh path/to/clip.mp4 hero-newclip 2
+scripts/grade-video.sh path/to/clip.mp4 hero-newclip [start-second] [end-second]
 ```
 
-Then upload or point the hero or feature video in Admin → Site settings to `/media/hero-newclip-1080.mp4` (and the `-720.mp4` and `-poster.jpg` files). Videos uploaded straight through the admin are not graded, but they still get the film-grain layer.
+Then point the hero or feature video in Admin → Site settings to `/media/hero-newclip-1080.mp4` (and the `-720.mp4` and `-poster.jpg` files). Videos uploaded straight through the admin are not processed, but they still get the film-grain layer.
 
 ## Brand assets
 

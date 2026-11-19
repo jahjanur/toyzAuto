@@ -13,7 +13,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { next, restored } = await searchParams;
   return (
     <main className="relative grid min-h-svh place-items-center overflow-hidden bg-bg px-5">
-      <video src="/media/hero-bugatti-720.mp4" poster="/media/hero-bugatti-poster.jpg" muted loop playsInline autoPlay className="absolute inset-0 h-full w-full object-cover opacity-30" />
+      <video src="/media/hero-showroom-720.mp4" poster="/media/hero-showroom-poster.jpg" muted loop playsInline autoPlay className="absolute inset-0 h-full w-full object-cover opacity-30" />
       <div className="absolute inset-0 bg-gradient-to-b from-bg/60 via-bg/80 to-bg" />
       <div className="relative w-full max-w-sm rounded-3xl border border-line glass p-8 shadow-card">
         <LogoSvg className="h-10 text-white" carClassName="fill-accent" />

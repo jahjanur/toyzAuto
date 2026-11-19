@@ -74,9 +74,9 @@ export const defaultSettings: SiteSettings = {
   heroSubheadline: "Rare cars, sourced and personalized to perfection.",
   heroPrimaryCta: { label: "Explore inventory", href: "/inventory" },
   heroSecondaryCta: { label: "Our services", href: "/services" },
-  heroVideo: { src: "/media/hero-bugatti-1080.mp4", srcMobile: "/media/hero-bugatti-720.mp4", poster: "/media/hero-bugatti-poster.jpg" },
+  heroVideo: { src: "/media/hero-showroom-1080.mp4", srcMobile: "/media/hero-showroom-720.mp4", poster: "/media/hero-showroom-poster.jpg" },
   statement: "We source, protect and personalize the cars others only dream about.",
-  featureVideo: { src: "/media/hero-wheels-1080.mp4", srcMobile: "/media/hero-wheels-720.mp4", poster: "/media/hero-wheels-poster.jpg" },
+  featureVideo: { src: "/media/feature-wheels-1080.mp4", srcMobile: "/media/feature-wheels-720.mp4", poster: "/media/feature-wheels-poster.jpg" },
   featureEyebrow: "Wheel atelier",
   featureTitle: "Forged\nto order.",
   featureText: "HRE, Vossen and BRABUS forged wheels, specified for your chassis.",
@@ -162,7 +162,12 @@ function deepMerge<T>(base: T, patch: Partial<T> | undefined): T {
 /** Raw settings (English fields + `fr` block), as edited in the admin. */
 export const getRawSettings = cache(async (): Promise<SiteSettings> => {
   const row = db.select().from(settings).where(eq(settings.key, KEY)).get();
-  return deepMerge(defaultSettings, (row?.value as Partial<SiteSettings>) ?? undefined);
+  const s = deepMerge(defaultSettings, (row?.value as Partial<SiteSettings>) ?? undefined);
+  // The first Bugatti and wheels clips were replaced by the showroom film; settings saved before that still point at them.
+  const retired = (v: HeroVideo) => /\/media\/hero-(bugatti|wheels)-/.test(`${v.src} ${v.srcMobile ?? ""} ${v.poster ?? ""}`);
+  if (retired(s.heroVideo)) s.heroVideo = defaultSettings.heroVideo;
+  if (retired(s.featureVideo)) s.featureVideo = defaultSettings.featureVideo;
+  return s;
 });
 
 /** Settings with marketing texts in the requested language (French falls back to English per field). */

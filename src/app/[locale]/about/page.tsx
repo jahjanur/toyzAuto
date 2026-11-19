@@ -28,7 +28,7 @@ export default async function AboutPage() {
   ].slice(0, 4);
   return (
     <>
-      <PageHeader eyebrow={s.aboutTitle} title={t.about.title} image={{ src: "/media/hero-bugatti-poster.jpg" }} />
+      <PageHeader eyebrow={s.aboutTitle} title={t.about.title} image={{ src: "/media/showroom.jpg" }} />
       <section className="container-x py-14 md:py-20">
         <div className="grid gap-10 lg:grid-cols-12">
           <Reveal className="lg:col-span-6"><p className="display-soft text-[clamp(1.4rem,3vw,2.3rem)] leading-snug">{paras[0]}</p></Reveal>
