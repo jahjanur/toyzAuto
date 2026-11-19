@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
     title: { default: s.seoTitle, template: "%s · TOYZ autoart" },
     description: s.seoDescription,
-    icons: { icon: "/icon.svg" },
+    icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }, { url: "/icon-192.png", type: "image/png", sizes: "192x192" }], apple: { url: "/apple-icon.png", sizes: "180x180" } },
     authors: [{ name: "Zulbera", url: "https://zulbera.com" }],
     creator: "Zulbera",
     generator: "Zulbera",
