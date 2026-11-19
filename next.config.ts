@@ -3,7 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Lets a second build live beside the main one (e.g. NEXT_DIST_DIR=.next-preview) without touching it.
   distDir: process.env.NEXT_DIST_DIR || ".next",
-  serverExternalPackages: ["better-sqlite3"],
+  // Loaded from node_modules at runtime: native (better-sqlite3) or large WebAssembly decoders (HEIC photos).
+  serverExternalPackages: ["better-sqlite3", "heic-convert", "heic-decode", "libheif-js"],
   // Hosts that build in "standalone" mode (e.g. Hostinger) must ship the SQL migrations, which are read from disk at startup.
   outputFileTracingIncludes: { "/**": ["./drizzle/**/*"] },
   images: {

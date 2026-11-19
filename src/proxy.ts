@@ -60,4 +60,6 @@ export async function proxy(req: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"] };
+// API routes and uploaded files skip the proxy: they check sessions themselves, and requests that pass through a proxy
+// are cut at 10 MB (camera photos are often bigger).
+export const config = { matcher: ["/((?!api/|uploads/|_next/static|_next/image|favicon.ico).*)"] };

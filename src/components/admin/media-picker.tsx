@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Loader2, Upload, X } from "lucide-react";
+import { isPhoto, shrinkPhoto, uploadFile } from "./upload-file";
 
 /** Single file picker that uploads immediately and writes the URL into a hidden/text input. */
 export function MediaPicker({ name, defaultValue, accept = "image/*", label = "Upload", preview = true }: { name: string; defaultValue?: string | null; accept?: string; label?: string; preview?: boolean }) {
@@ -10,12 +11,12 @@ export function MediaPicker({ name, defaultValue, accept = "image/*", label = "U
   const ref = useRef<HTMLInputElement>(null);
   async function upload(file: File) {
     setBusy(true);
-    const fd = new FormData(); fd.append("files", file);
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const json = await res.json();
-      if (res.ok) setUrl(json.files[0].url); else alert(json.error ?? "Upload failed");
-    } catch { alert("Upload failed"); } finally { setBusy(false); }
+      const f = await uploadFile(isPhoto(file) ? await shrinkPhoto(file) : file);
+      setUrl(f.url);
+    } catch (e) {
+      alert(`${file.name} could not be uploaded: ${e instanceof Error ? e.message : "upload failed"}`);
+    } finally { setBusy(false); }
   }
   const isVideo = /\.(mp4|webm|mov)$/i.test(url);
   const isAudio = /\.(mp3|m4a|aac|wav|ogg)$/i.test(url);

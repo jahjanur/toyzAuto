@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { Upload, X, Star, GripVertical, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { isPhoto, shrinkPhoto, uploadFile } from "./upload-file";
 
 export type ImgItem = { url: string; width?: number | null; height?: number | null; blurDataUrl?: string | null; alt?: string | null };
 
@@ -16,21 +17,21 @@ export function ImageManager({ name = "images", initial, title }: { name?: strin
   const dirty = JSON.stringify(items.map((x) => x.url)) !== JSON.stringify(initial.map((x) => x.url));
 
   async function upload(files: FileList | File[]) {
-    const list = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    const list = Array.from(files).filter(isPhoto);
     if (!list.length) return;
     setBusy((b) => b + list.length);
-    // upload in chunks of 4 to keep requests small
-    for (let i = 0; i < list.length; i += 4) {
-      const fd = new FormData();
-      list.slice(i, i + 4).forEach((f) => fd.append("files", f));
+    const failed: string[] = [];
+    // One photo per request, shrunk in the browser first: small, fast requests and a clear error per photo.
+    for (const original of list) {
       try {
-        const res = await fetch("/api/upload", { method: "POST", body: fd });
-        const json = await res.json();
-        if (res.ok) setItems((prev) => [...prev, ...json.files.map((f: ImgItem) => ({ url: f.url, width: f.width, height: f.height, blurDataUrl: f.blurDataUrl, alt: title ?? null }))]);
-        else alert(json.error ?? "Upload failed");
-      } catch { alert("Upload failed"); }
-      setBusy((b) => Math.max(0, b - Math.min(4, list.length - i)));
+        const f = await uploadFile(await shrinkPhoto(original));
+        setItems((prev) => [...prev, { url: f.url, width: f.width, height: f.height, blurDataUrl: f.blurDataUrl, alt: title ?? null }]);
+      } catch (e) {
+        failed.push(`• ${original.name}: ${e instanceof Error ? e.message : "upload failed"}`);
+      }
+      setBusy((b) => Math.max(0, b - 1));
     }
+    if (failed.length) alert(`${failed.length} photo${failed.length > 1 ? "s" : ""} could not be uploaded:\n\n${failed.join("\n")}`);
   }
   const move = (from: number, to: number) => setItems((prev) => { if (to < 0 || to >= prev.length) return prev; const next = [...prev]; const [x] = next.splice(from, 1); next.splice(to, 0, x); return next; });
 
@@ -46,7 +47,7 @@ export function ImageManager({ name = "images", initial, title }: { name?: strin
         {busy ? <Loader2 className="size-6 animate-spin text-accent" /> : <Upload className="size-6 text-accent" />}
         <p className="text-sm text-ink">{busy ? `Uploading ${busy} photo${busy > 1 ? "s" : ""}…` : "Drop photos here or click to upload"}</p>
         <p className="text-[11px] text-muted">JPG, PNG, HEIC, WebP · converted to optimized WebP automatically · first photo is the cover</p>
-        <input ref={inputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => e.target.files && upload(e.target.files)} />
+        <input ref={inputRef} type="file" accept="image/*,.heic,.heif" multiple className="hidden" onChange={(e) => e.target.files && upload(e.target.files)} />
       </div>
       {items.length > 0 && (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
