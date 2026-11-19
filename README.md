@@ -124,10 +124,7 @@ How it works: `src/proxy.ts` picks the language and rewrites English URLs onto t
 
 ## Engine sounds
 
-- **Brand hover only**: hovering a marque on the homepage brand grid or in the menu's "Shop by marque" plays a short engine clip. On phones, tapping a marque plays it while the next page opens. Cars themselves (inventory cards, car pages) have no sound.
-- **Sound toggle** in the header mutes or unmutes everything; the choice is remembered. Browsers only allow sound after the visitor's first click or tap, so a "Tap to hear the engines" chip sits beside the brand grid.
-- **Which clip plays**: the brand's upload in Admin → Brands, otherwise the built-in clip for that marque. Mapping lives in `src/lib/sounds.ts`; playback in `src/components/sound/`.
-- **Built-in clips** (`public/sounds/hover`) are CC0 recordings from Freesound, trimmed and loudness-matched. They are the same make or engine type, not the exact cars in stock. Sources are listed in `public/sounds/CREDITS.txt`. Recording the real cars and uploading them per brand in the admin is recommended.
+Removed at the client's request (November 2026): the site plays no sounds. The original clips and their credits are kept outside the repo in `_source/hover-sounds`. The unused `sound_url` columns stay in the database so existing data needs no migration.
 
 ## Layout safety (no text outside its box)
 

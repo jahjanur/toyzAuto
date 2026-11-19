@@ -238,15 +238,6 @@ export const en = {
     retention: "Inquiries are retained for as long as needed to serve you and meet legal obligations. You may request access to, correction of, or deletion of your personal information at any time by emailing {email}.",
     contactTitle: "Contact",
   },
-  sound: {
-    on: "Sound on",
-    off: "Sound off",
-    toggle: "Engine sounds",
-    enable: "Tap to hear the engines",
-    hoverHint: "Hover a marque to hear it",
-    tapHint: "Tap a marque to hear it",
-    muted: "Sound is off",
-  },
   notFound: { title: "Wrong turn.", text: "This page moved, or the car was sold.", browse: "Browse inventory", home: "Home" },
 };
 

@@ -243,14 +243,5 @@ export const fr: Dictionary = {
     retention: "Les demandes sont conservées aussi longtemps que nécessaire pour vous servir et respecter nos obligations légales. Vous pouvez demander en tout temps l'accès à vos renseignements personnels, leur correction ou leur suppression en écrivant à {email}.",
     contactTitle: "Nous joindre",
   },
-  sound: {
-    on: "Son activé",
-    off: "Son désactivé",
-    toggle: "Sons des moteurs",
-    enable: "Touchez pour entendre les moteurs",
-    hoverHint: "Survolez une marque pour l'entendre",
-    tapHint: "Touchez une marque pour l'entendre",
-    muted: "Le son est désactivé",
-  },
   notFound: { title: "Mauvais virage.", text: "Cette page a été déplacée, ou la voiture a été vendue.", browse: "Parcourir l'inventaire", home: "Accueil" },
 };

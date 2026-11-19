@@ -23,7 +23,7 @@ export const getBrands = cache(async () => db.select().from(brands).orderBy(asc(
 
 export const getBrandsWithCounts = cache(async () => {
   const rows = db
-    .select({ id: brands.id, name: brands.name, slug: brands.slug, soundUrl: brands.soundUrl, sortOrder: brands.sortOrder, count: sql<number>`count(${vehicles.id})` })
+    .select({ id: brands.id, name: brands.name, slug: brands.slug, sortOrder: brands.sortOrder, count: sql<number>`count(${vehicles.id})` })
     .from(brands)
     .leftJoin(vehicles, and(eq(vehicles.brandId, brands.id), inArray(vehicles.status, ["available", "reserved", "coming_soon"])))
     .groupBy(brands.id)

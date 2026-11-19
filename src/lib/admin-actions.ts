@@ -199,14 +199,13 @@ export async function saveBrand(_prev: ActionState, formData: FormData): Promise
   const name = String(formData.get("name") ?? "").trim();
   const opt = (k: string) => (formData.has(k) ? String(formData.get(k) ?? "").trim() || null : undefined);
   const logoUrl = opt("logoUrl");
-  const soundUrl = opt("soundUrl");
   const sortOrder = formData.has("sortOrder") ? Number(formData.get("sortOrder") || 0) : undefined;
   if (!name) return { ok: false, error: "Name is required." };
   const slug = slugify(name);
-  if (id) db.update(brands).set({ name, slug, logoUrl, soundUrl, sortOrder }).where(eq(brands.id, id)).run();
+  if (id) db.update(brands).set({ name, slug, logoUrl, sortOrder }).where(eq(brands.id, id)).run();
   else {
     if (db.select().from(brands).where(eq(brands.slug, slug)).get()) return { ok: false, error: "Brand already exists." };
-    db.insert(brands).values({ name, slug, logoUrl, soundUrl, sortOrder: sortOrder ?? 0 }).run();
+    db.insert(brands).values({ name, slug, logoUrl, sortOrder: sortOrder ?? 0 }).run();
   }
   revalidateSite();
   revalidatePath("/admin/brands");

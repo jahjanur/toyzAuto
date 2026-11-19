@@ -218,11 +218,6 @@ html.lenis, html.lenis body { height: auto; }
 .display, .display-soft { overflow-wrap: anywhere; }
 .fit-measure, .fit-measure * { overflow-wrap: normal !important; word-break: normal !important; hyphens: manual !important; }
 
-/* Equalizer bars for sound UI */
-@keyframes eq-bar { 0%, 100% { height: 3px; } 50% { height: 12px; } }
-.eq-bar { height: 3px; animation: eq-bar 0.7s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) { .eq-bar { animation: none; height: 8px; } }
-
 /* Hero word reveal (CSS so it can wait for the intro without JS) */
 @keyframes word-up {
   from { transform: translateY(105%); }

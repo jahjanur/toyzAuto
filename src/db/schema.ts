@@ -18,7 +18,7 @@ export const brands = sqliteTable("brands", {
   name: text("name").notNull().unique(),
   slug: text("slug").notNull().unique(),
   logoUrl: text("logo_url"),
-  /** Short engine clip played when a visitor hovers the brand (falls back to /sounds/hover/<slug>.mp3). */
+  /** Unused since engine sounds were removed (kept so existing databases need no migration). */
   soundUrl: text("sound_url"),
   sortOrder: integer("sort_order").notNull().default(0),
 });
@@ -56,7 +56,7 @@ export const vehicles = sqliteTable(
     descriptionFr: text("description_fr"),
     highlightsFr: text("highlights_fr", { mode: "json" }).$type<string[]>().notNull().default(sql`'[]'`),
     videoUrl: text("video_url"),
-    /** Engine recording for the "Hear the engine" player (falls back to a brand/engine-type clip). */
+    /** Unused since engine sounds were removed (kept so existing databases need no migration). */
     soundUrl: text("sound_url"),
     status: text("status", { enum: VEHICLE_STATUSES }).notNull().default("available"),
     featured: integer("featured", { mode: "boolean" }).notNull().default(false),

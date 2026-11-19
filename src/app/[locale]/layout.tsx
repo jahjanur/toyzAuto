@@ -9,7 +9,6 @@ import { getI18n } from "@/i18n/server";
 import { SmoothScroll } from "@/components/ui/smooth-scroll";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { I18nProvider } from "@/i18n/client";
-import { SoundProvider } from "@/components/sound/sound-provider";
 import { CreditSignature } from "@/components/brand/credit-signature";
 import { isLocale, LOCALES } from "@/i18n/config";
 import { localizeService } from "@/i18n/content";
@@ -17,7 +16,6 @@ import { getSettings } from "@/lib/settings";
 import { getBrandsWithCounts, getServices, getVehicles } from "@/lib/queries";
 import { pickLandscape } from "@/lib/images";
 import { formatPrice } from "@/lib/utils";
-import { hoverSoundFor } from "@/lib/sounds";
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +62,6 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[lo
     <html lang={locale === "fr" ? "fr-CA" : "en-CA"} suppressHydrationWarning className={`${fontVars} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-bg text-ink">
         <I18nProvider locale={locale}>
-          <SoundProvider>
           <CreditSignature />
           <Intro credit={t.footer.craftedShort} />
           <SmoothScroll />
@@ -75,14 +72,13 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[lo
             instagram={s.socials.instagram}
             announcement={s.announcement}
             address={s.addressLine1}
-            marques={brands.map((b) => ({ name: b.name, slug: b.slug, count: b.count, sound: hoverSoundFor(b) }))}
+            marques={brands.map((b) => ({ name: b.name, slug: b.slug, count: b.count }))}
             featured={featured}
             services={services.map((x) => ({ title: x.title, slug: x.slug, excerpt: x.excerpt, coverImage: x.coverImage }))}
             totalVehicles={vehicles.length}
           />
           <main className="flex-1">{children}</main>
           <Footer s={s} services={services} />
-          </SoundProvider>
         </I18nProvider>
       </body>
     </html>

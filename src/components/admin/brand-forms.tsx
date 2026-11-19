@@ -4,7 +4,6 @@ import { useActionState } from "react";
 import { Trash2, Plus } from "lucide-react";
 import { saveBrand, deleteBrand, type ActionState } from "@/lib/admin-actions";
 import { ConfirmButton, Notice, SubmitButton } from "./ui";
-import { MediaPicker } from "./media-picker";
 
 export function NewBrandForm() {
   const [state, action] = useActionState<ActionState, FormData>(saveBrand, null);
@@ -18,7 +17,7 @@ export function NewBrandForm() {
   );
 }
 
-export function BrandRow({ brand }: { brand: { id: number; name: string; slug: string; count: number; sortOrder: number; soundUrl: string | null; defaultSound: string | null } }) {
+export function BrandRow({ brand }: { brand: { id: number; name: string; slug: string; count: number; sortOrder: number } }) {
   const [state, action] = useActionState<ActionState, FormData>(saveBrand, null);
   return (
     <li className="flex flex-wrap items-center gap-3 px-4 py-3">
@@ -27,10 +26,6 @@ export function BrandRow({ brand }: { brand: { id: number; name: string; slug: s
         <input name="name" defaultValue={brand.name} className="input h-9 flex-1 py-0" />
         <input name="sortOrder" type="number" defaultValue={brand.sortOrder} className="input h-9 w-20 py-0" title="Sort order" />
         <span className="w-20 text-[12px] text-muted">{brand.count} live</span>
-        <div className="basis-full">
-          <p className="mb-1.5 text-[11px] text-muted">Hover sound {brand.soundUrl ? "(custom)" : brand.defaultSound ? "(built-in: leave empty to keep it)" : "(none)"}</p>
-          <MediaPicker name="soundUrl" defaultValue={brand.soundUrl} accept="audio/*" label="Upload sound" preview={false} />
-        </div>
         <SubmitButton variant="ghost" className="h-9">Save</SubmitButton>
         {state && <Notice state={state} />}
       </form>

@@ -13,14 +13,13 @@ import { NAV_LINKS } from "@/lib/nav-links";
 import { MARQUES, marqueMask } from "@/lib/marques";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n/client";
-import { EngineHover, SoundToggle } from "@/components/sound/sound-ui";
 import { FitText, useFitWords } from "@/components/ui/fit";
 import { ZulberaCredit } from "@/components/brand/zulbera";
 import { LOCALE_COOKIE, localizeHref, stripLocale } from "@/i18n/config";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-export type NavMarque = { name: string; slug: string; count: number; sound?: string | null };
+export type NavMarque = { name: string; slug: string; count: number };
 export type NavFeatured = { title: string; model: string; brand?: string; slug: string; image?: string; blur?: string | null; price: string } | null;
 export type NavService = { title: string; slug: string; excerpt: string | null; coverImage: string | null };
 
@@ -142,7 +141,6 @@ export function Nav(props: NavProps) {
           </nav>
 
           <div className="relative z-10 flex items-center gap-2.5 justify-self-end">
-            <SoundToggle className="hidden sm:flex" />
             <LanguageSwitch className="hidden sm:flex" />
             <a href={`tel:${phone}`} aria-label={`${t.nav.call} ${phoneDisplay}`} title={phoneDisplay} className="group grid size-10 shrink-0 place-items-center rounded-full border border-white/15 text-white transition-colors duration-300 hover:border-accent hover:bg-accent">
               <Phone className="size-4 transition-transform duration-500 group-hover:rotate-12" />
@@ -238,13 +236,11 @@ function InventoryPanel({ marques, featured, totalVehicles, onNavigate }: NavPro
         <p className="eyebrow mb-5">{t.nav.shopByMarque}</p>
         <div className="grid grid-cols-4 border-l border-t border-white/[.07]">
           {list.map((m) => (
-            <EngineHover key={m.slug} id={`nav-${m.slug}`} src={m.sound ?? null} className="border-b border-r border-white/[.07]">
-            <Link href={`/inventory?brand=${m.slug}`} onClick={onNavigate} className="group flex h-full flex-col items-center justify-center gap-2.5 px-2 py-5 text-center transition-colors hover:bg-white/[.03]">
+            <Link key={m.slug} href={`/inventory?brand=${m.slug}`} onClick={onNavigate} className="group flex h-full flex-col items-center justify-center gap-2.5 border-b border-r border-white/[.07] px-2 py-5 text-center transition-colors hover:bg-white/[.03]">
               <span aria-hidden className="block size-9 bg-white/70 transition-colors duration-500 group-hover:bg-accent" style={marqueMask(m.slug)} />
               <span className="display text-[9.5px] leading-tight text-white/75 group-hover:text-white">{m.name}</span>
               <span className="font-mono text-[9px] text-muted-2">{m.count}</span>
             </Link>
-            </EngineHover>
           ))}
         </div>
       </div>
@@ -365,7 +361,7 @@ function MobileMenu({ open, onClose, pathname, phone, phoneDisplay, instagram, a
         >
           <div aria-hidden className="pointer-events-none absolute -right-32 top-1/4 size-96 rounded-full bg-accent/20 blur-[120px]" />
           <div className="container-x relative flex min-h-full flex-col pt-[calc(var(--nav-h)+1.25rem)] pb-[max(1.75rem,env(safe-area-inset-bottom))]">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}><div className="flex items-center gap-2"><LanguageSwitch className="inline-flex" onSwitch={onClose} /><SoundToggle withLabel /></div></motion.div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}><div className="flex items-center gap-2"><LanguageSwitch className="inline-flex" onSwitch={onClose} /></div></motion.div>
             <ul className="mt-6">
               {links.map((l, i) => {
                 const active = isActive(pathname, l.href);
@@ -388,12 +384,10 @@ function MobileMenu({ open, onClose, pathname, phone, phoneDisplay, instagram, a
                 <p className="eyebrow mb-4">{t.nav.shopByMarque}</p>
                 <div className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {list.map((m) => (
-                    <EngineHover key={m.slug} id={`mnav-${m.slug}`} src={m.sound ?? null} className="shrink-0">
-                    <Link href={`/inventory?brand=${m.slug}`} onClick={onClose} className="flex flex-col items-center gap-2 rounded-2xl border border-white/[.08] px-4 py-3.5">
+                    <Link key={m.slug} href={`/inventory?brand=${m.slug}`} onClick={onClose} className="flex shrink-0 flex-col items-center gap-2 rounded-2xl border border-white/[.08] px-4 py-3.5">
                       <span aria-hidden className="block size-8 bg-white/80" style={marqueMask(m.slug)} />
                       <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">{m.name}</span>
                     </Link>
-                    </EngineHover>
                   ))}
                 </div>
               </motion.div>
